@@ -16,21 +16,30 @@ dlAbs <- function(DOI){
   }else{
     # Pause to avoid being blocked
     Sys.sleep(5)
+
     # Define URL from which the data will be downloaded
     URL <- paste0("https://www.journals.uchicago.edu/doi/abs/", DOI)
+    
+    # Extract ID (removing the slash for file name)
+    ID <- paste0("../data/sourcesAmNat/", gsub("/", "_", DOI))
+    
     # Download using wget (follows URL if changed)
-    cmd <- paste0("wget -O temp ", URL)
+    # NB: we save the downloaded file
+    cmd <- paste0("wget -O ", ID, " ", URL)
     system(cmd)
-    # Extract lines with abstract and keywords
-    abs <- system("awk '/abstract content/,/\\/kwd-group/p' temp", intern = TRUE)
+    
+    # Extract lines with abstract
+    abs <- system(paste0("awk '/abstract content/,/\\/abstract/p' ", ID), intern = TRUE)
   }
   abs
 }
 
 # Do it for all articles
-for(i in 3589:nrow(allArticles)){
+for(i in rev(3859:10765#1:nrow(allArticles)
+             )){ 
   if(missingAbs[i]){
     allArticles[i, "Abstract"] <- dlAbs(allArticles[i, "DOI"])
+    print(allArticles[i, "Abstract"])
   }
   cat(i, "")
 }
