@@ -14,6 +14,8 @@ dlAbs <- function(DOI){
   if(DOI == ""){
     abs <- ""
   }else{
+    # Pause to avoid being blocked
+    Sys.sleep(5)
     # Define URL from which the data will be downloaded
     URL <- paste0("https://www.journals.uchicago.edu/doi/abs/", DOI)
     # Download using wget (follows URL if changed)
@@ -26,7 +28,7 @@ dlAbs <- function(DOI){
 }
 
 # Do it for all articles
-for(i in 1:nrow(allArticles)){
+for(i in 3589:nrow(allArticles)){
   if(missingAbs[i]){
     allArticles[i, "Abstract"] <- dlAbs(allArticles[i, "DOI"])
   }
