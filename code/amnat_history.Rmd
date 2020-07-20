@@ -1,0 +1,78 @@
+---
+title: "AmNatHistoryModels"
+author: "FD"
+output: 
+    html_document: 
+          toc: true
+          toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Data
+
+## Data sources
+
+On 2020-07-20, I searched for all articles with `Publication Name = American Naturalist` on Web of Science Core collection. There were 11029 results. I manually exported all results in batches of 500 (export limit on WoS, when you also want to export the abstract), as `Tab-delimited (Mac)`. I collated the downloaded files, opened the merged file in Excel; I removed empty columns, renamed columns, as saved the file as `.csv`.
+
+The source files are in <https://github.com/flodebarre/2020_AmNatHistory/tree/master/data/sourcesWOS/withAbstract>. 
+
+## Load data 
+
+```{r}
+allArticles <- read.csv("../data/mergedAmNat_abs.csv", stringsAsFactors = FALSE)
+```
+
+## Explore data
+
+Number of articles loaded: 
+```{r}
+nrow(allArticles)
+```
+
+Articles with abstract:
+```{r}
+# Add information about number of characters in the abstract of each article
+allArticles <- cbind(allArticles, AbsLength = nchar(allArticles$Abstract))
+
+# Compute proportion of articles with non zero abstract length, by year
+isAbs.byY <- aggregate((allArticles$AbsLength>0), by = list(allArticles$PublicationYear), FUN = mean)
+
+# Plot the result
+par(las = 1)
+plot(isAbs.byY$Group.1, isAbs.byY$x, 
+     xlab = "Publication Year", ylab = "Proportion of articles with non zero abstract length")
+```
+
+# Search for words
+
+Function to find a specific word in an abstract
+```{r}
+findWord <- function(word, line){
+  grepl(pattern = word, x = allArticles[line, "Abstract"], ignore.case = TRUE)
+}
+```
+
+Search for "model" in the abstracts
+```{r}
+v <- unlist(lapply(as.list(1:nrow(allArticles)), function(i) findWord("model", i)))
+
+# When there is no abstract, replace the lenght by NA
+v[allArticles$AbsLength==0] <- NA
+
+allArticles <- cbind(allArticles, wordModel = v)
+```
+
+Group by year and plot output
+```{r}
+model.byY <- aggregate(allArticles$wordModel, by = list(allArticles$PublicationYear), FUN = mean, na.rm = TRUE)
+
+par(las = 1)
+plot(model.byY$Group.1, model.byY$x, 
+     ylim = c(0, 1), 
+     xlab = "Publication Year", ylab = "Proportion of articles with `model` in the abstract", 
+     main = "Model")
+```
