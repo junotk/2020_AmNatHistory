@@ -71,6 +71,28 @@ Subset of the data for which there are abstracts.
 absArticles <- allArticles[!is.na(allArticles$Abstract), ]
 ```
 
+Check distribution of lengths of abstracts
+```{r}
+par(las = 1)
+nCA <- nchar(absArticles$Abstract)
+hist(nCA, main = "Distribution of the number of characters in abstracts", 
+     xlab = "Number of characters", breaks = seq(0, max(nCA)+50, by = 50), col = cols[3], border = "white", 
+     axes = FALSE)
+axis(1, pos = 0)
+axis(2, pos = 0)
+```
+
+Count the number of words
+```{r}
+nbWordsAbs <- unlist(lapply(strsplit(absArticles$Abstract, " "), length))
+hist(nbWordsAbs, main = "Distribution of the number of words in abstracts", 
+     xlab = "Number of words", breaks = seq(0, max(nbWordsAbs)+50, by = 10), col = cols[3], border = "white", 
+     axes = FALSE)
+axis(1, pos = 0)
+axis(2, pos = 0)
+```
+
+
 There are `r nrow(absArticles)` such items. 
 
 # Search for words
