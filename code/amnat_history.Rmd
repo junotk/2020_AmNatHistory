@@ -23,7 +23,8 @@ The source files are in <https://github.com/flodebarre/2020_AmNatHistory/tree/ma
 ## Load data 
 
 ```{r}
-allArticles <- read.csv("../data/mergedAmNat_abs.csv", stringsAsFactors = FALSE)
+#allArticles <- read.csv("../data/mergedAmNat_abs.csv", stringsAsFactors = FALSE)
+allArticles <- read.csv("AmNat_allAbs.csv", stringsAsFactors = FALSE)
 ```
 
 ## Explore data

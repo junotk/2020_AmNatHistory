@@ -25,7 +25,7 @@ dlAbs <- function(DOI){
     
     # Download using wget (follows URL if changed)
     # NB: we save the downloaded file
-    cmd <- paste0("wget -O ", ID, " ", URL)
+    cmd <- paste0("wget -O ", ID, " --no-check-certificate ", URL)
     system(cmd)
     
     # Extract lines with abstract
@@ -35,13 +35,13 @@ dlAbs <- function(DOI){
 }
 
 # Do it for all articles
-for(i in rev(3859:10765#1:nrow(allArticles)
+for(i in rev(3859:9591#1:nrow(allArticles)
              )){ 
   if(missingAbs[i]){
     allArticles[i, "Abstract"] <- dlAbs(allArticles[i, "DOI"])
     print(allArticles[i, "Abstract"])
   }
-  cat(i, "")
+  cat("This was", i, "\n")
 }
 
 # Save the output
