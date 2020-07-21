@@ -1,6 +1,6 @@
 
 
--  `data/` contains files downloaded from Web of Science
+-  `data/` contains files downloaded from Web of Science, and data downloaded from the AmNat website. The main data file is `AmNat_allAbstracts.csv`.
 
 -  `code/` contains code to  
 

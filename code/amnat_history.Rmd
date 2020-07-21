@@ -23,15 +23,29 @@ The source files are in <https://github.com/flodebarre/2020_AmNatHistory/tree/ma
 ## Load data 
 
 ```{r}
-#allArticles <- read.csv("../data/mergedAmNat_abs.csv", stringsAsFactors = FALSE)
-allArticles <- read.csv("AmNat_allAbs.csv", stringsAsFactors = FALSE)
+allArticles <- read.csv("../data/AmNat_allAbstracts.csv", stringsAsFactors = FALSE)
 ```
 
 ## Explore data
 
-Number of articles loaded: 
+Number of articles loaded: `r nrow(allArticles)` items in the dataset.
+
+```{r }
+library(RColorBrewer)
+cols <- brewer.pal(4, "Set2")
+maincol <- cols[1]
+```
+
+Number of articles per year:
 ```{r}
-nrow(allArticles)
+nb.byY <- aggregate(allArticles$Authors, by = list(allArticles$PublicationYear), FUN = length)
+par(las = 1)
+plot(nb.byY$Group.1, nb.byY$x, 
+     xlab = "Publication Year", ylab = "Number of items", 
+     ylim = c(0, max(nb.byY$x)), axes = FALSE, 
+     pch = 16, col = maincol)
+axis(1, pos = 0)
+axis(2, pos = 1900-1)
 ```
 
 Articles with abstract:
@@ -40,40 +54,63 @@ Articles with abstract:
 allArticles <- cbind(allArticles, AbsLength = nchar(allArticles$Abstract))
 
 # Compute proportion of articles with non zero abstract length, by year
-isAbs.byY <- aggregate((allArticles$AbsLength>0), by = list(allArticles$PublicationYear), FUN = mean)
+isAbs.byY <- aggregate((!is.na(allArticles$Abstract)), by = list(allArticles$PublicationYear), FUN = mean)
 
 # Plot the result
 par(las = 1)
 plot(isAbs.byY$Group.1, isAbs.byY$x, 
-     xlab = "Publication Year", ylab = "Proportion of articles with non zero abstract length")
+     xlab = "Publication Year", ylab = "Proportion of items with non zero abstract length", 
+     pch = 16, col = cols[2], 
+     axes = FALSE)
+axis(1, pos = 0)
+axis(2, pos = 1900-1)
 ```
+
+Subset of the data for which there are abstracts.
+```{r}
+absArticles <- allArticles[!is.na(allArticles$Abstract), ]
+```
+
+There are `r nrow(absArticles)` such items. 
 
 # Search for words
 
 Function to find a specific word in an abstract
 ```{r}
 findWord <- function(word, line){
-  grepl(pattern = word, x = allArticles[line, "Abstract"], ignore.case = TRUE)
+  grepl(pattern = word, x = absArticles[line, "Abstract"], ignore.case = TRUE)
 }
 ```
 
 Search for "model" in the abstracts
 ```{r}
-v <- unlist(lapply(as.list(1:nrow(allArticles)), function(i) findWord("model", i)))
+v <- unlist(lapply(as.list(1:nrow(absArticles)), function(i) findWord("model", i)))
 
-# When there is no abstract, replace the lenght by NA
-v[allArticles$AbsLength==0] <- NA
-
-allArticles <- cbind(allArticles, wordModel = v)
+absArticles <- cbind(absArticles, wordModel = v)
 ```
 
 Group by year and plot output
 ```{r}
-model.byY <- aggregate(allArticles$wordModel, by = list(allArticles$PublicationYear), FUN = mean, na.rm = TRUE)
+model.byY <- aggregate(absArticles$wordModel, by = list(absArticles$PublicationYear), FUN = mean, na.rm = TRUE)
 
 par(las = 1)
-plot(model.byY$Group.1, model.byY$x, 
+plot(range(model.byY$Group.1), range(model.byY$x), # Initialize the plot
      ylim = c(0, 1), 
-     xlab = "Publication Year", ylab = "Proportion of articles with `model` in the abstract", 
-     main = "Model")
+     xlab = "Publication Year", ylab = "Proportion of abstracts containing the word `model`", 
+     main = "``Model''",
+     axes = FALSE,
+     type = "n")
+#rect(1900-1, 0, 2020, 1, col = gray(0.9), border = gray(0, 0))
+
+#for(i in seq(0.1, 1, by = 0.1)){
+#  lines(c(1900-1, 2020), rep(i, 2), col = gray(0.95), lwd = 1)
+#}
+
+axis(1, pos = 0)
+axis(2, pos = 1900-1)
+
+# Add the points
+# (doing this so that the points are above the x axis...)
+points(model.byY$Group.1, model.byY$x, pch = 16, col = maincol) 
 ```
+
