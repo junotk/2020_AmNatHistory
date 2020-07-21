@@ -35,10 +35,10 @@ dlAbs <- function(DOI){
 }
 
 # Do it for all articles
-for(i in rev(3859:9591#1:nrow(allArticles)
+for(i in rev(3859:7032#1:nrow(allArticles)
              )){ 
   if(missingAbs[i]){
-    allArticles[i, "Abstract"] <- dlAbs(allArticles[i, "DOI"])
+    allArticles[i, "Abstract"] <- paste0(dlAbs(allArticles[i, "DOI"]), collapse = "_")
     print(allArticles[i, "Abstract"])
   }
   cat("This was", i, "\n")
