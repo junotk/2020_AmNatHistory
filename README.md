@@ -8,4 +8,8 @@
 
     -  analyse the data (`amnat_history.Rmd`), whose output can be vizualized at <http://htmlpreview.github.io/?https://github.com/flodebarre/2020_AmNatHistory/blob/master/code/amnat_history.html>
 
+- 'analysis' contains topic analysis models and results 
+
+  - ipython notebook for LDA analysis
+  - Preliminary result with topic number = 12: <https://htmlpreview.github.io/?https://github.com/junotk/2020_AmNatHistory/blob/master/analysis/pyldavis_output_pcoa.html>
    
