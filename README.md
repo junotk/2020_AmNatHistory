@@ -13,3 +13,6 @@
   - ipython notebook for LDA analysis
   - Preliminary result with topic number = 12: <https://htmlpreview.github.io/?https://github.com/junotk/2020_AmNatHistory/blob/master/analysis/pyldavis_output_pcoa.html>
    
+
+- Spread sheets of some analyses
+    - https://drive.google.com/drive/folders/1IUafliulPFu57kg7innVl0bCLnGkln0R?usp=sharing
